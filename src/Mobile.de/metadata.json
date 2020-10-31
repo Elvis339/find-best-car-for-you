@@ -1,494 +1,490 @@
 [
     {
         "name": "Mercedes-Benz",
-        "id": "17200"
+        "id": 17200
     },
     {
         "name": "Volkswagen",
-        "id": "25200"
+        "id": 25200
     },
     {
         "name": "BMW",
-        "id": "3500"
+        "id": 3500
     },
     {
         "name": "Audi",
-        "id": "1900"
-    },
-    {
-        "name": "",
-        "id": ""
+        "id": 1900
     },
     {
         "name": "Abarth",
-        "id": "140"
+        "id": 140
     },
     {
         "name": "AC",
-        "id": "203"
+        "id": 203
     },
     {
         "name": "Acura",
-        "id": "375"
+        "id": 375
     },
     {
         "name": "Aixam",
-        "id": "800"
+        "id": 800
     },
     {
         "name": "Alfa Romeo",
-        "id": "900"
+        "id": 900
     },
     {
         "name": "ALPINA",
-        "id": "1100"
+        "id": 1100
     },
     {
         "name": "Artega",
-        "id": "121"
+        "id": 121
     },
     {
         "name": "Asia Motors",
-        "id": "1750"
+        "id": 1750
     },
     {
         "name": "Aston Martin",
-        "id": "1700"
+        "id": 1700
     },
     {
         "name": "Audi",
-        "id": "1900"
+        "id": 1900
     },
     {
         "name": "Austin",
-        "id": "2000"
+        "id": 2000
     },
     {
         "name": "Austin Healey",
-        "id": "1950"
+        "id": 1950
     },
     {
         "name": "BAIC",
-        "id": "31863"
+        "id": 31863
     },
     {
         "name": "Bentley",
-        "id": "3100"
+        "id": 3100
     },
     {
         "name": "BMW",
-        "id": "3500"
+        "id": 3500
     },
     {
         "name": "Borgward",
-        "id": "3850"
+        "id": 3850
     },
     {
         "name": "Brilliance",
-        "id": "4025"
+        "id": 4025
     },
     {
         "name": "Bugatti",
-        "id": "4350"
+        "id": 4350
     },
     {
         "name": "Buick",
-        "id": "4400"
+        "id": 4400
     },
     {
         "name": "Cadillac",
-        "id": "4700"
+        "id": 4700
     },
     {
         "name": "Casalini",
-        "id": "112"
+        "id": 112
     },
     {
         "name": "Caterham",
-        "id": "5300"
+        "id": 5300
     },
     {
         "name": "Chatenet",
-        "id": "83"
+        "id": 83
     },
     {
         "name": "Chevrolet",
-        "id": "5600"
+        "id": 5600
     },
     {
         "name": "Chrysler",
-        "id": "5700"
+        "id": 5700
     },
     {
         "name": "Citroën",
-        "id": "5900"
+        "id": 5900
     },
     {
         "name": "Cobra",
-        "id": "6200"
+        "id": 6200
     },
     {
         "name": "Corvette",
-        "id": "6325"
+        "id": 6325
     },
     {
         "name": "Cupra",
-        "id": "3"
+        "id": 3
     },
     {
         "name": "Dacia",
-        "id": "6600"
+        "id": 6600
     },
     {
         "name": "Daewoo",
-        "id": "6800"
+        "id": 6800
     },
     {
         "name": "Daihatsu",
-        "id": "7000"
+        "id": 7000
     },
     {
         "name": "DeTomaso",
-        "id": "7400"
+        "id": 7400
     },
     {
         "name": "DFSK",
-        "id": "31864"
+        "id": 31864
     },
     {
         "name": "Dodge",
-        "id": "7700"
+        "id": 7700
     },
     {
         "name": "Donkervoort",
-        "id": "255"
+        "id": 255
     },
     {
         "name": "DS Automobiles",
-        "id": "235"
+        "id": 235
     },
     {
         "name": "Ferrari",
-        "id": "8600"
+        "id": 8600
     },
     {
         "name": "Fiat",
-        "id": "8800"
+        "id": 8800
     },
     {
         "name": "Fisker",
-        "id": "172"
+        "id": 172
     },
     {
         "name": "Ford",
-        "id": "9000"
+        "id": 9000
     },
     {
         "name": "GAC Gonow",
-        "id": "205"
+        "id": 205
     },
     {
         "name": "Gemballa",
-        "id": "204"
+        "id": 204
     },
     {
         "name": "GMC",
-        "id": "9900"
+        "id": 9900
     },
     {
         "name": "Grecav",
-        "id": "122"
+        "id": 122
     },
     {
         "name": "Hamann",
-        "id": "186"
+        "id": 186
     },
     {
         "name": "Holden",
-        "id": "10850"
+        "id": 10850
     },
     {
         "name": "Honda",
-        "id": "11000"
+        "id": 11000
     },
     {
         "name": "Hummer",
-        "id": "11050"
+        "id": 11050
     },
     {
         "name": "Hyundai",
-        "id": "11600"
+        "id": 11600
     },
     {
         "name": "Infiniti",
-        "id": "11650"
+        "id": 11650
     },
     {
         "name": "Isuzu",
-        "id": "11900"
+        "id": 11900
     },
     {
         "name": "Iveco",
-        "id": "12100"
+        "id": 12100
     },
     {
         "name": "Jaguar",
-        "id": "12400"
+        "id": 12400
     },
     {
         "name": "Jeep",
-        "id": "12600"
+        "id": 12600
     },
     {
         "name": "Kia",
-        "id": "13200"
+        "id": 13200
     },
     {
         "name": "Koenigsegg",
-        "id": "13450"
+        "id": 13450
     },
     {
         "name": "KTM",
-        "id": "13900"
+        "id": 13900
     },
     {
         "name": "Lada",
-        "id": "14400"
+        "id": 14400
     },
     {
         "name": "Lamborghini",
-        "id": "14600"
+        "id": 14600
     },
     {
         "name": "Lancia",
-        "id": "14700"
+        "id": 14700
     },
     {
         "name": "Land Rover",
-        "id": "14800"
+        "id": 14800
     },
     {
         "name": "Landwind",
-        "id": "14845"
+        "id": 14845
     },
     {
         "name": "Lexus",
-        "id": "15200"
+        "id": 15200
     },
     {
         "name": "Ligier",
-        "id": "15400"
+        "id": 15400
     },
     {
         "name": "Lincoln",
-        "id": "15500"
+        "id": 15500
     },
     {
         "name": "Lotus",
-        "id": "15900"
+        "id": 15900
     },
     {
         "name": "Mahindra",
-        "id": "16200"
+        "id": 16200
     },
     {
         "name": "Maserati",
-        "id": "16600"
+        "id": 16600
     },
     {
         "name": "Maybach",
-        "id": "16700"
+        "id": 16700
     },
     {
         "name": "Mazda",
-        "id": "16800"
+        "id": 16800
     },
     {
         "name": "McLaren",
-        "id": "137"
+        "id": 137
     },
     {
         "name": "Mercedes-Benz",
-        "id": "17200"
+        "id": 17200
     },
     {
         "name": "MG",
-        "id": "17300"
+        "id": 17300
     },
     {
         "name": "Microcar",
-        "id": "30011"
+        "id": 30011
     },
     {
         "name": "MINI",
-        "id": "17500"
+        "id": 17500
     },
     {
         "name": "Mitsubishi",
-        "id": "17700"
+        "id": 17700
     },
     {
         "name": "Morgan",
-        "id": "17900"
+        "id": 17900
     },
     {
         "name": "Nissan",
-        "id": "18700"
+        "id": 18700
     },
     {
         "name": "NSU",
-        "id": "18875"
+        "id": 18875
     },
     {
         "name": "Oldsmobile",
-        "id": "18975"
+        "id": 18975
     },
     {
         "name": "Opel",
-        "id": "19000"
+        "id": 19000
     },
     {
         "name": "Pagani",
-        "id": "149"
+        "id": 149
     },
     {
         "name": "Peugeot",
-        "id": "19300"
+        "id": 19300
     },
     {
         "name": "Piaggio",
-        "id": "19600"
+        "id": 19600
     },
     {
         "name": "Plymouth",
-        "id": "19800"
+        "id": 19800
     },
     {
         "name": "Polestar",
-        "id": "4"
+        "id": 4
     },
     {
         "name": "Pontiac",
-        "id": "20000"
+        "id": 20000
     },
     {
         "name": "Porsche",
-        "id": "20100"
+        "id": 20100
     },
     {
         "name": "Proton",
-        "id": "20200"
+        "id": 20200
     },
     {
         "name": "Renault",
-        "id": "20700"
+        "id": 20700
     },
     {
         "name": "Rolls-Royce",
-        "id": "21600"
+        "id": 21600
     },
     {
         "name": "Rover",
-        "id": "21700"
+        "id": 21700
     },
     {
         "name": "Ruf",
-        "id": "125"
+        "id": 125
     },
     {
         "name": "Saab",
-        "id": "21800"
+        "id": 21800
     },
     {
         "name": "Santana",
-        "id": "22000"
+        "id": 22000
     },
     {
         "name": "Seat",
-        "id": "22500"
+        "id": 22500
     },
     {
         "name": "Skoda",
-        "id": "22900"
+        "id": 22900
     },
     {
         "name": "Smart",
-        "id": "23000"
+        "id": 23000
     },
     {
         "name": "speedART",
-        "id": "188"
+        "id": 188
     },
     {
         "name": "Spyker",
-        "id": "100"
+        "id": 100
     },
     {
         "name": "Ssangyong",
-        "id": "23100"
+        "id": 23100
     },
     {
         "name": "Subaru",
-        "id": "23500"
+        "id": 23500
     },
     {
         "name": "Suzuki",
-        "id": "23600"
+        "id": 23600
     },
     {
         "name": "Talbot",
-        "id": "23800"
+        "id": 23800
     },
     {
         "name": "Tata",
-        "id": "23825"
+        "id": 23825
     },
     {
         "name": "TECHART",
-        "id": "189"
+        "id": 189
     },
     {
         "name": "Tesla",
-        "id": "135"
+        "id": 135
     },
     {
         "name": "Toyota",
-        "id": "24100"
+        "id": 24100
     },
     {
         "name": "Trabant",
-        "id": "24200"
+        "id": 24200
     },
     {
         "name": "Triumph",
-        "id": "24400"
+        "id": 24400
     },
     {
         "name": "TVR",
-        "id": "24500"
+        "id": 24500
     },
     {
         "name": "Volkswagen",
-        "id": "25200"
+        "id": 25200
     },
     {
         "name": "Volvo",
-        "id": "25100"
+        "id": 25100
     },
     {
         "name": "Wartburg",
-        "id": "25300"
+        "id": 25300
     },
     {
         "name": "Westfield",
-        "id": "113"
+        "id": 113
     },
     {
         "name": "Wiesmann",
-        "id": "25650"
+        "id": 25650
     },
     {
         "name": "Other",
-        "id": "1400"
+        "id": 1400
     }
 ]

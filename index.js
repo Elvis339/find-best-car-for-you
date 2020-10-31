@@ -39,7 +39,7 @@ const Mobile = require("./src/Mobile.de");
   //   }
   // });
 
-  const m = new Mobile();
-  let a = await m.getCarModels(17200);
-  console.log(a);
+  const m = new Mobile("bmw", "330");
+  const b = await m.makeRequest();
+  console.log(b)
 })();
