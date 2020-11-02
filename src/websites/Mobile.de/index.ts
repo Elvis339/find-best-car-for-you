@@ -2,7 +2,7 @@ const fs = require("fs");
 const axios = require("axios");
 const cheerio = require("cheerio");
 
-import { saveMobileDeSync } from "../Utils";
+import { saveMobileDeSync } from "../../Utils";
 import { MobileDEInterface } from "./MobileDEInterface";
 
 export interface MobileDEAdditionalProps {

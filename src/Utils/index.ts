@@ -6,7 +6,7 @@ export async function* saveMobileDeSync(
   urls: string[],
   carId: number,
   modelId: number
-): AsyncIterableIterator<any> {
+): AsyncIterableIterator<void> {
   for (const url of urls) {
     const res: any = await axios.get(url);
     const $ = cheerio.load(res.data);
