@@ -12,3 +12,13 @@ export interface Car {
   price: number;
   description: string;
 }
+
+export interface CarAdditionalQueryProps {
+  yearFrom?: number;
+  yearTo?: number;
+  priceFrom?: number;
+  priceTo?: number;
+  fuelType?: string;
+  vehicleType?: string;
+  transmission?: string;
+}

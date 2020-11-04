@@ -1,35 +1,191 @@
-import Axios, { AxiosResponse } from "axios";
-import { ManagerInterface } from "../ManagerInterface";
-import axios from "axios";
-import { PAResponse } from "./PolovniAutomobiliInterface";
+const cheerio = require("cheerio");
 
-export class PolovniAutomobili {
+import axios, { AxiosResponse } from "axios";
+import { PAResponse } from "./PolovniAutomobiliInterface";
+import { CarAdditionalQueryProps } from "../../Entities/Car";
+import { ManagerInterface } from "../ManagerInterface";
+import {
+  santizePolovniAutomobiliData,
+  savePolovniAutomobiliSync,
+} from "../../Utils";
+import { CarRepository } from "../../Repository/CarRepository";
+
+interface UrlType {
+  brand: string;
+  model: string;
+  price_from?: string;
+  price_to?: string;
+  year_from?: string;
+  year_to?: string;
+  chassis?: string;
+  fuel?: string;
+  gearbox?: string;
+}
+
+export class PolovniAutomobili implements ManagerInterface {
   private API_URL = "https://www.polovniautomobili.com/json/getModels/26";
 
-  constructor(public car: string, public model: string) {
+  constructor(
+    public car: string,
+    public model: string,
+    public additional: CarAdditionalQueryProps = {}
+  ) {
     this.car = car;
     this.model = model;
+    this.additional = additional;
   }
 
   async getCarMetadata() {
     try {
-      let carId: number, modelId: number;
+      let carId: number, modelId: number, brandName: string, modelName: string;
       const res: AxiosResponse<PAResponse[]> = await axios.get(this.API_URL);
-      res.data.find((car) => {
+      res.data.find((car: PAResponse) => {
         if (car.brandName.toLowerCase() === this.car.toLowerCase()) {
           carId = car.brandID;
+          brandName = car.brandName;
         }
 
         car.modelList.find((model) => {
           if (model.modelName.toLowerCase() === this.model.toLowerCase()) {
             modelId = parseInt(model.modelID, 10);
+            modelName = model.modelName;
           }
         });
       });
       return {
         carId,
         modelId,
+        brandName,
+        modelName,
       };
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  buildUrl(brandName: string, modelName: string, currentPage?: number): string {
+    let url =
+      currentPage > 1
+        ? `https://www.polovniautomobili.com/auto-oglasi/pretraga?page=${currentPage}sort=price_asc&`
+        : "https://www.polovniautomobili.com/auto-oglasi/pretraga?sort=price_asc&";
+    let urlType: UrlType = {
+      brand: brandName.toLowerCase(),
+      model: modelName.toLowerCase(),
+    };
+    const additional = this.additional;
+    for (const key in additional) {
+      if (key === "vehicleType") {
+        if (additional[key] === "Limousine") {
+          urlType = {
+            ...urlType,
+            chassis: "277",
+          };
+        } else if (additional[key] === "Estate") {
+          urlType = {
+            ...urlType,
+            chassis: "278",
+          };
+        }
+      } else if (key === "yearFrom") {
+        urlType = {
+          ...urlType,
+          year_from: `${additional.yearFrom}`,
+        };
+      } else if (key === "yearTo") {
+        urlType = {
+          ...urlType,
+          year_to: `${additional.yearTo}`,
+        };
+      } else if (key === "fuelType") {
+        urlType = {
+          ...urlType,
+          fuel: "2309",
+        };
+      } else if (key === "priceFrom") {
+        urlType = {
+          ...urlType,
+          price_from: `${additional.priceFrom}`,
+        };
+      } else if (key === "priceTo") {
+        urlType = {
+          ...urlType,
+          price_to: `${additional.priceTo}`,
+        };
+      } else if (key === "transmission") {
+        if (additional[key] === "AUTOMATIC_GEAR") {
+          urlType = {
+            ...urlType,
+            gearbox: "251",
+          };
+        }
+      }
+    }
+
+    const keys = Object.keys(urlType);
+
+    keys.forEach((type, index) => {
+      if (keys.length === index + 1) {
+        // @ts-ignore
+        url += `${type}=${urlType[type]}`;
+      } else {
+        // @ts-ignore
+        url += `${type}=${urlType[type]}&`;
+      }
+    });
+
+    return url;
+  }
+
+  getCarUrls(urls: typeof cheerio): string[] {
+    let arr: string[] = [];
+    urls.map((_, element: typeof cheerio) => {
+      const attributes = element.attribs;
+      for (const _ in attributes) {
+        if (attributes["href"] !== undefined) {
+          arr.push(`https://www.polovniautomobili.com${attributes["href"]}`);
+        }
+      }
+    });
+    return [...new Set(arr)];
+  }
+
+  async makeRequest() {
+    try {
+      const {
+        brandName,
+        modelName,
+        carId,
+        modelId,
+      } = await this.getCarMetadata();
+      const url = this.buildUrl(brandName, modelName);
+      console.log(url);
+      const { data } = await axios.get(url);
+      const $ = cheerio.load(data);
+      const currentCarUrlText = $(
+        "span.uk-width-medium-7-10.uk-width-7-10 > a"
+      );
+      let pagination = $("ul.uk-pagination.uk-pagination-left").find(
+        "li > a.js-pagination-numeric"
+      ).length;
+
+      let url2DArray: string[][] = [this.getCarUrls(currentCarUrlText)];
+      if (pagination > 1) {
+        for (let i = 2; i < 4; i++) {
+          const url = this.buildUrl(brandName, modelName, i);
+          console.log(url);
+          const { data } = await axios.get(url);
+          const $ = cheerio.load(data);
+          const currentCarUrlText = $(
+            "span.uk-width-medium-7-10.uk-width-7-10 > a"
+          );
+          url2DArray.push(this.getCarUrls(currentCarUrlText));
+        }
+      }
+      //@ts-ignore
+      const flat = url2DArray.flat();
+      santizePolovniAutomobiliData(flat, carId, modelId);
+    } catch (error) {
+      console.error(error);
+    }
   }
 }

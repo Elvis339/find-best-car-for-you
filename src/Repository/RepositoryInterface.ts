@@ -1,7 +1,7 @@
 import { Car } from "../Entities/Car";
 
 export interface Repository {
-  createCar: () => void;
+  createCar: (data: Car[]) => void;
 }
 
 export type findByOpts = {

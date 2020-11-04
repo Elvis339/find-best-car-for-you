@@ -1,4 +1,5 @@
 export interface ManagerInterface {
-  getCarId: () => Promise<number | undefined>;
-  getModelId: () => Promise<number>;
+  getCarId?: () => Promise<number | undefined>;
+  getModelId?: () => Promise<number>;
+  makeRequest: () => Promise<void>;
 }

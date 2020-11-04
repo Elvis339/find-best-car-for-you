@@ -4,32 +4,7 @@ const cheerio = require("cheerio");
 
 import { saveMobileDeSync } from "../../Utils";
 import { MobileDEInterface } from "./MobileDEInterface";
-
-export interface MobileDEAdditionalProps {
-  yearFrom?: number;
-  yearTo?: number;
-  priceFrom?: number;
-  priceTo?: number;
-  fuelType?:
-    | "CNG"
-    | "DIESEL"
-    | "ELECTRICITY"
-    | "ETHANOL"
-    | "HYBRID"
-    | "HYBRID_DIESEL"
-    | "HYDROGENIUM"
-    | "LPG"
-    | "PETROL";
-  vehicleType?:
-    | "Limousine"
-    | "Cabrio"
-    | "EstateCar"
-    | "OffRoad"
-    | "SmallCar"
-    | "SportsCar"
-    | "Van";
-  transmission?: "AUTOMATIC_GEAR" | "MANUAL_GEAR" | "SEMIAUTOMATIC_GEAR";
-}
+import { CarAdditionalQueryProps } from "../../Entities/Car";
 
 export type CarMetadata = {
   id: number;
@@ -55,25 +30,9 @@ export type UrlType = {
   scopeId?: "C";
   "sortOption.sortBy"?: "searchNetGrossPrice";
   "sortOption.sortOrder"?: "ASCENDING";
-  categories?:
-    | "Limousine"
-    | "Cabrio"
-    | "EstateCar"
-    | "OffRoad"
-    | "SmallCar"
-    | "SportsCar"
-    | "Van"; // Category of the car
-  tr?: "AUTOMATIC_GEAR" | "MANUAL_GEAR" | "SEMIAUTOMATIC_GEAR" | string; // Transmision
-  ft?:
-    | "CNG"
-    | "DIESEL"
-    | "ELECTRICITY"
-    | "ETHANOL"
-    | "HYBRID"
-    | "HYBRID_DIESEL"
-    | "HYDROGENIUM"
-    | "LPG"
-    | "PETROL"; // Fuel Type
+  categories?: string; // Category of the car
+  tr?: string; // Transmision
+  ft?: string;
 };
 
 class MobileDE implements MobileDEInterface {
@@ -82,7 +41,7 @@ class MobileDE implements MobileDEInterface {
   constructor(
     public car: string,
     public model: string,
-    public additional: MobileDEAdditionalProps = {}
+    public additional: CarAdditionalQueryProps = {}
   ) {
     this.car = car;
     this.model = model;

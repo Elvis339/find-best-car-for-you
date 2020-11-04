@@ -21,18 +21,15 @@
 //     console.log('Server started: http://localhost:3000');
 // })
 
-const Mobile = require("./Mobile.de/index");
+import { PolovniAutomobili } from "./websites/PolovniAutomobili";
 import { CarRepository } from "./Repository/CarRepository";
 (async function () {
-  // const m = new Mobile("bmw", "320", {
-  //   yearFrom: 2010,
-  //   yearTo: 2014,
-  //   priceTo: 8000,
-  //   vehicleType: "Limousine",
-  //   transmission: "AUTOMATIC_GEAR",
-  // });
-  // await m.makeRequest();
-  CarRepository.findBy({ column: "car_id", searchBy: "3500" })
-    .then((data) => console.log(data))
-    .catch((err) => console.error(err));
+  const m = new PolovniAutomobili("bmw", "320", {
+    yearFrom: 2010,
+    yearTo: 2014,
+    priceTo: 8000,
+    // vehicleType: "Estate",
+    // transmission: "AUTOMATIC_GEAR",
+  });
+  await m.makeRequest();
 })();

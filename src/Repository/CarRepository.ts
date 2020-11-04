@@ -1,56 +1,18 @@
-import { type } from "os";
 import { Queries } from "../Database/Queries";
 import { Car } from "../Entities/Car";
 import { findByOpts, Repository } from "./RepositoryInterface";
 const dbx = require("../Database");
 
 export class CarRepository implements Repository {
-  constructor(
-    private name: string,
-    private car_id: number,
-    private model_id: number,
-    private firstRegistration: string,
-    private url: string,
-    private img_url: string,
-    private price: number,
-    private descritpion: string,
-    private transmission: string,
-    private fuelType: string,
-    private vehicleType: string
-  ) {
-    this.name = name;
-    this.car_id = car_id;
-    this.model_id = model_id;
-    this.firstRegistration = firstRegistration;
-    this.url = url;
-    this.img_url = img_url;
-    this.price = price;
-    this.descritpion = descritpion;
-    this.transmission = transmission;
-    this.fuelType = fuelType;
-    this.vehicleType = vehicleType;
-  }
+  constructor() {}
 
-  createCar() {
-    const values = [
-      this.name,
-      this.car_id,
-      this.model_id,
-      this.firstRegistration,
-      this.url,
-      this.img_url,
-      this.price,
-      this.descritpion,
-      this.transmission,
-      this.fuelType,
-      this.vehicleType,
-    ];
-
+  createCar(data: Car[]) {
     let sql = Queries.insertIntoCar;
-    dbx.run(sql, values, (err) => {
+    dbx.run(sql, data, (err) => {
       if (err) {
         throw new Error(err);
       }
+      console.log("ROW INSERTED...");
     });
   }
 
