@@ -4,12 +4,10 @@ import axios, { AxiosResponse } from "axios";
 import { PAResponse } from "./PolovniAutomobiliInterface";
 import { CarAdditionalQueryProps } from "../../Entities/Car";
 import { ManagerInterface } from "../ManagerInterface";
-import {
-  santizePolovniAutomobiliData,
-  savePolovniAutomobiliSync,
-} from "../../Utils";
+import { santizePolovniAutomobiliData } from "../../Utils";
 import { CarRepository } from "../../Repository/CarRepository";
-
+import { HistoryRepository } from "../../Repository/HistoryRepository";
+import { History } from "../../Entities/History";
 interface UrlType {
   brand: string;
   model: string;
@@ -127,6 +125,8 @@ export class PolovniAutomobili implements ManagerInterface {
       if (keys.length === index + 1) {
         // @ts-ignore
         url += `${type}=${urlType[type]}`;
+      } else if (type === "model") {
+        url += `${type}%5B%5D=${urlType[type]}&`;
       } else {
         // @ts-ignore
         url += `${type}=${urlType[type]}&`;
@@ -149,14 +149,50 @@ export class PolovniAutomobili implements ManagerInterface {
     return [...new Set(arr)];
   }
 
-  async makeRequest() {
+  async hasDataInDatabase(
+    brandName: string,
+    modelName: string
+  ): Promise<boolean> {
+    const htx = new HistoryRepository();
+    const data = await htx.getOneBy(
+      brandName,
+      modelName,
+      this.getYears().toString()
+    );
+    console.log(data);
+    return data ? true : false;
+  }
+
+  getYears() {
+    if (this.additional) {
+      if (this.additional.yearFrom) {
+        return this.additional.yearFrom;
+      } else if (this.additional.yearTo) {
+        return this.additional.yearTo;
+      }
+    }
+    return 0;
+  }
+
+  async makeRequest(): Promise<any> {
     try {
+      const htx = new HistoryRepository();
       const {
         brandName,
         modelName,
         carId,
         modelId,
       } = await this.getCarMetadata();
+
+      const hasDataFromDB = await this.hasDataInDatabase(brandName, modelName);
+      if (hasDataFromDB) {
+        const ctx = new CarRepository();
+        console.log("I have data in my db, grapes...");
+        return await ctx.getSortedByYearAndPrice(carId, modelId);
+      }
+
+      console.log("I dont have data in my db going to fetch it...");
+
       const url = this.buildUrl(brandName, modelName);
       console.log(url);
       const { data } = await axios.get(url);
@@ -168,7 +204,7 @@ export class PolovniAutomobili implements ManagerInterface {
         "li > a.js-pagination-numeric"
       ).length;
 
-      let url2DArray: string[][] = [this.getCarUrls(currentCarUrlText)];
+      let urlArray: string[] = [...this.getCarUrls(currentCarUrlText)];
       if (pagination > 1) {
         for (let i = 2; i < 4; i++) {
           const url = this.buildUrl(brandName, modelName, i);
@@ -178,12 +214,12 @@ export class PolovniAutomobili implements ManagerInterface {
           const currentCarUrlText = $(
             "span.uk-width-medium-7-10.uk-width-7-10 > a"
           );
-          url2DArray.push(this.getCarUrls(currentCarUrlText));
+          urlArray.push(...this.getCarUrls(currentCarUrlText));
         }
       }
-      //@ts-ignore
-      const flat = url2DArray.flat();
-      santizePolovniAutomobiliData(flat, carId, modelId);
+      await santizePolovniAutomobiliData(urlArray, carId, modelId);
+
+      htx.insert(brandName, modelName, this.getYears());
     } catch (error) {
       console.error(error);
     }

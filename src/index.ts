@@ -22,14 +22,13 @@
 // })
 
 import { PolovniAutomobili } from "./websites/PolovniAutomobili";
-import { CarRepository } from "./Repository/CarRepository";
 (async function () {
-  const m = new PolovniAutomobili("bmw", "320", {
+  const m = new PolovniAutomobili("audi", "a5", {
     yearFrom: 2010,
-    yearTo: 2014,
+    yearTo: 2015,
     priceTo: 8000,
-    // vehicleType: "Estate",
-    // transmission: "AUTOMATIC_GEAR",
+    vehicleType: "Limousine",
+    transmission: "AUTOMATIC_GEAR",
   });
   await m.makeRequest();
 })();

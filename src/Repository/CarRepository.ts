@@ -6,7 +6,7 @@ const dbx = require("../Database");
 export class CarRepository implements Repository {
   constructor() {}
 
-  createCar(data: Car[]) {
+  insert(data: Car[]) {
     let sql = Queries.insertIntoCar;
     dbx.run(sql, data, (err) => {
       if (err) {
@@ -16,13 +16,43 @@ export class CarRepository implements Repository {
     });
   }
 
-  static findBy({ column, searchBy }: findByOpts): Promise<Car | undefined> {
+  update() {
+    return null;
+  }
+
+  delete() {
+    return null;
+  }
+
+  getAll() {
+    return null;
+  }
+
+  getOneBy() {
+    return null;
+  }
+
+  getBy({ column, searchBy }: findByOpts): Promise<Car[] | null> {
     return new Promise((resolve, reject) => {
       const sql = `SELECT * FROM cars WHERE ${column}=${searchBy};`;
-      dbx.get(sql, function (err: Error, row: Car | null) {
+      dbx.all(sql, function (err: Error, rows: Car[] | null) {
         if (err) reject(err);
 
-        resolve(row);
+        const hasRows = rows.length > 0 ? rows : null;
+        resolve(hasRows);
+      });
+      dbx.close();
+    });
+  }
+
+  getSortedByYearAndPrice(carId: number, modelId: number) {
+    return new Promise((resolve, reject) => {
+      const sql = `SELECT * FROM 'cars' WHERE car_id=${carId} AND model_id=${modelId} ORDER BY first_registration DESC, price ASC;`;
+      dbx.all(sql, (err: Error, rows: Car[] | null) => {
+        if (err) reject(err);
+
+        const hasRows = rows.length > 0 ? rows : null;
+        resolve(hasRows);
       });
       dbx.close();
     });

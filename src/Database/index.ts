@@ -9,5 +9,6 @@ let ctx = new sqlite3.Database("./queries.db", (err) => {
 });
 
 ctx.run(Queries.createCarTable);
+ctx.run(Queries.createHistoryTable);
 
 module.exports = ctx;
