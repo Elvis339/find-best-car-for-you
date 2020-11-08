@@ -13,5 +13,4 @@ export interface Repository {
 export type findByOpts = {
   column: keyof Car | keyof History;
   searchBy: string;
-  select?: string | "*";
 };

@@ -5,6 +5,8 @@ export enum Queries {
         name VARCHAR NOT NULL UNIQUE,
         car_id INTEGER NOT NULL,
         model_id INTEGER NOT NULL,
+        car_name VARCHAR(20) NOT NULL,
+        model_name VARCHAR(20) NOT NULL,
         first_registration TEXT NOT NULL,
         transmission VARCHAR(20) NOT NULL,
         fuel_type VARCHAR(20) NOT NULL,
@@ -15,7 +17,7 @@ export enum Queries {
         description TEXT
     );
     CREATE UNIQUE INDEX data_idx ON data(id, name);`,
-  insertIntoCar = `INSERT OR IGNORE INTO cars(name, car_id, model_id, first_registration, url, img_url, price, description, transmission, fuel_type, vehicle_type) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  insertIntoCar = `INSERT OR IGNORE INTO cars(name, car_id, model_id, car_name, model_name, first_registration, url, img_url, price, description, transmission, fuel_type, vehicle_type) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   carsSortedByNewstAndCheapest = `SELECT * FROM 'cars' WHERE car_id = '' ORDER BY first_registration DESC, price ASC;`,
   createHistoryTable = `CREATE TABLE IF NOT EXISTS history (
     id INTEGER PRIMARY KEY,

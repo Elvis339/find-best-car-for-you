@@ -1,34 +1,24 @@
-// const express = require('express');
-// const bodyParser = require('body-parser');
-// const logger = require('morgan');
+import { getCars } from "./Controller/CarController";
+import { hasDataInDatabase } from "./Middleware";
+const db = require("./Database/Queries");
 
-// const app = express();
+const express = require("express");
+const bodyParser = require("body-parser");
+const logger = require("morgan");
 
-// app.use(bodyParser.json());
-// app.use(
-//     bodyParser.urlencoded({
-//         extended: true,
-//     }),
-// );
-// app.use(logger('dev'));
+const app = express();
 
-// app.get('/', (req, res) => {
-//     console.log(req.data);
-//     res.send('OK')
-// })
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+app.use(logger("dev"));
+// app.use(queryBeforeRequest);
 
-// app.listen(3000, () => {
-//     console.log('Server started: http://localhost:3000');
-// })
+app.post("/", hasDataInDatabase, getCars);
 
-import { PolovniAutomobili } from "./websites/PolovniAutomobili";
-(async function () {
-  const m = new PolovniAutomobili("audi", "a5", {
-    yearFrom: 2010,
-    yearTo: 2015,
-    priceTo: 8000,
-    vehicleType: "Limousine",
-    transmission: "AUTOMATIC_GEAR",
-  });
-  await m.makeRequest();
-})();
+app.listen(3000, () => {
+  console.log("Server started: http://localhost:3000");
+});

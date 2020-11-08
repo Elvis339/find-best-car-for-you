@@ -1,15 +1,26 @@
-import { Request, Response, NextFunction } from "express";
-import { Car } from "../Entities/Car";
+import { Request, NextFunction } from "express";
 import { CarRepository } from "../Repository/CarRepository";
+import { HistoryRepository } from "../Repository/HistoryRepository";
 
-export const queryBeforeRequest = (req, _, next: NextFunction) => {
+export const hasDataInDatabase = async (
+  req: Request,
+  _,
+  next: NextFunction
+) => {
   try {
-    console.log(req.body);
-    // const cars: Car[] | null = CarRepository.findBy(``);
-    // if (!cars) {
-    //   return;
-    // }
-    // req.cars = cars;
+    const data = req.body;
+    const htx = new HistoryRepository();
+    const ctx = new CarRepository();
+
+    const hasData = await htx.getOneBy(data.car, data.model, data.yearFrom);
+
+    if (hasData) {
+      //@ts-ignore
+      req.hasCars = true;
+    } else {
+      //@ts-ignore
+      req.hasCars = false;
+    }
     next();
   } catch (error) {
     console.error(error);

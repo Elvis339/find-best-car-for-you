@@ -7,7 +7,6 @@ import { ManagerInterface } from "../ManagerInterface";
 import { santizePolovniAutomobiliData } from "../../Utils";
 import { CarRepository } from "../../Repository/CarRepository";
 import { HistoryRepository } from "../../Repository/HistoryRepository";
-import { History } from "../../Entities/History";
 interface UrlType {
   brand: string;
   model: string;
@@ -22,6 +21,8 @@ interface UrlType {
 
 export class PolovniAutomobili implements ManagerInterface {
   private API_URL = "https://www.polovniautomobili.com/json/getModels/26";
+  public car_id: number;
+  public model_id: number;
 
   constructor(
     public car: string,
@@ -110,7 +111,7 @@ export class PolovniAutomobili implements ManagerInterface {
           price_to: `${additional.priceTo}`,
         };
       } else if (key === "transmission") {
-        if (additional[key] === "AUTOMATIC_GEAR") {
+        if (additional[key] === "Automatic") {
           urlType = {
             ...urlType,
             gearbox: "251",
@@ -149,20 +150,6 @@ export class PolovniAutomobili implements ManagerInterface {
     return [...new Set(arr)];
   }
 
-  async hasDataInDatabase(
-    brandName: string,
-    modelName: string
-  ): Promise<boolean> {
-    const htx = new HistoryRepository();
-    const data = await htx.getOneBy(
-      brandName,
-      modelName,
-      this.getYears().toString()
-    );
-    console.log(data);
-    return data ? true : false;
-  }
-
   getYears() {
     if (this.additional) {
       if (this.additional.yearFrom) {
@@ -175,53 +162,52 @@ export class PolovniAutomobili implements ManagerInterface {
   }
 
   async makeRequest(): Promise<any> {
-    try {
-      const htx = new HistoryRepository();
-      const {
-        brandName,
-        modelName,
-        carId,
-        modelId,
-      } = await this.getCarMetadata();
+    return new Promise(async (resolve, reject) => {
+      try {
+        const {
+          brandName,
+          modelName,
+          carId,
+          modelId,
+        } = await this.getCarMetadata();
+        this.car_id = carId;
+        this.model_id = modelId;
 
-      const hasDataFromDB = await this.hasDataInDatabase(brandName, modelName);
-      if (hasDataFromDB) {
-        const ctx = new CarRepository();
-        console.log("I have data in my db, grapes...");
-        return await ctx.getSortedByYearAndPrice(carId, modelId);
-      }
+        const url = this.buildUrl(brandName, modelName);
+        // console.log(url);
+        const { data } = await axios.get(url);
+        const $ = cheerio.load(data);
+        const currentCarUrlText = $(
+          "span.uk-width-medium-7-10.uk-width-7-10 > a"
+        );
+        let pagination = $("ul.uk-pagination.uk-pagination-left").find(
+          "li > a.js-pagination-numeric"
+        ).length;
 
-      console.log("I dont have data in my db going to fetch it...");
-
-      const url = this.buildUrl(brandName, modelName);
-      console.log(url);
-      const { data } = await axios.get(url);
-      const $ = cheerio.load(data);
-      const currentCarUrlText = $(
-        "span.uk-width-medium-7-10.uk-width-7-10 > a"
-      );
-      let pagination = $("ul.uk-pagination.uk-pagination-left").find(
-        "li > a.js-pagination-numeric"
-      ).length;
-
-      let urlArray: string[] = [...this.getCarUrls(currentCarUrlText)];
-      if (pagination > 1) {
-        for (let i = 2; i < 4; i++) {
-          const url = this.buildUrl(brandName, modelName, i);
-          console.log(url);
-          const { data } = await axios.get(url);
-          const $ = cheerio.load(data);
-          const currentCarUrlText = $(
-            "span.uk-width-medium-7-10.uk-width-7-10 > a"
-          );
-          urlArray.push(...this.getCarUrls(currentCarUrlText));
+        let urlArray: string[] = [...this.getCarUrls(currentCarUrlText)];
+        if (pagination > 1) {
+          for (let i = 2; i < 4; i++) {
+            const url = this.buildUrl(brandName, modelName, i);
+            // console.log(url);
+            const { data } = await axios.get(url);
+            const $ = cheerio.load(data);
+            const currentCarUrlText = $(
+              "span.uk-width-medium-7-10.uk-width-7-10 > a"
+            );
+            urlArray.push(...this.getCarUrls(currentCarUrlText));
+          }
         }
+        await santizePolovniAutomobiliData(
+          urlArray,
+          carId,
+          modelId,
+          this.car.toLowerCase(),
+          this.model.toLowerCase()
+        );
+        resolve();
+      } catch (error) {
+        reject(error);
       }
-      await santizePolovniAutomobiliData(urlArray, carId, modelId);
-
-      htx.insert(brandName, modelName, this.getYears());
-    } catch (error) {
-      console.error(error);
-    }
+    });
   }
 }

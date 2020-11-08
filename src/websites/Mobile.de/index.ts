@@ -2,9 +2,11 @@ const fs = require("fs");
 const axios = require("axios");
 const cheerio = require("cheerio");
 
-import { saveMobileDeSync } from "../../Utils";
+import { santizeMobileDeData } from "../../Utils";
 import { MobileDEInterface } from "./MobileDEInterface";
 import { CarAdditionalQueryProps } from "../../Entities/Car";
+import { HistoryRepository } from "../../Repository/HistoryRepository";
+import { CarRepository } from "../../Repository/CarRepository";
 
 export type CarMetadata = {
   id: number;
@@ -35,7 +37,7 @@ export type UrlType = {
   ft?: string;
 };
 
-class MobileDE implements MobileDEInterface {
+export class MobileDE implements MobileDEInterface {
   private fileName: string = `${__dirname}/metadata.json`;
 
   constructor(
@@ -48,8 +50,11 @@ class MobileDE implements MobileDEInterface {
     this.additional = additional;
   }
 
-  buildUrl(carId: number, modelId: number): string {
-    let url = `https://suchen.mobile.de/fahrzeuge/search.html?`;
+  buildUrl(carId: number, modelId: number, currentPage?: number): string {
+    let url =
+      currentPage > 1
+        ? `https://suchen.mobile.de/fahrzeuge/search.html?pageNumber=${currentPage}&`
+        : `https://suchen.mobile.de/fahrzeuge/search.html?`;
     let urlType: UrlType = {
       "makeModelVariant1.makeId": carId,
       "makeModelVariant1.modelId": modelId,
@@ -76,10 +81,17 @@ class MobileDE implements MobileDEInterface {
           maxFirstRegistrationDate: `${additional.yearTo}-12-31`,
         };
       } else if (key === "fuelType") {
-        urlType = {
-          ...urlType,
-          ft: additional.fuelType,
-        };
+        if (additional[key] === "Diesel") {
+          urlType = {
+            ...urlType,
+            ft: "DIESEL",
+          };
+        } else {
+          urlType = {
+            ...urlType,
+            ft: "PETROL",
+          };
+        }
       } else if (key === "priceFrom") {
         urlType = {
           ...urlType,
@@ -91,10 +103,17 @@ class MobileDE implements MobileDEInterface {
           maxPrice: `${additional.priceTo}`,
         };
       } else if (key === "transmission") {
-        urlType = {
-          ...urlType,
-          tr: `${additional.transmission}`,
-        };
+        if (additional[key] === "Automatic") {
+          urlType = {
+            ...urlType,
+            tr: "AUTOMATIC_GEAR",
+          };
+        } else {
+          urlType = {
+            ...urlType,
+            tr: "MANUAL_GEAR",
+          };
+        }
       }
     }
 
@@ -172,24 +191,70 @@ class MobileDE implements MobileDEInterface {
     return [...new Set(arr)];
   }
 
-  async makeRequest(): Promise<void> {
-    try {
-      const carId: number = this.getCarId();
-      const modelId: number = await this.getModelId();
-      const url = this.buildUrl(carId, modelId);
-      const { data } = await axios.get(url);
-      const $ = cheerio.load(data);
-      const currentCarUrlText = $(
-        "a.link--muted.no--text--decoration.result-item"
-      );
-      const carUrls = this.getCarUrls(currentCarUrlText);
-      for await (const car of saveMobileDeSync(carUrls, carId, modelId)) {
-        car;
+  getYears() {
+    if (this.additional) {
+      if (this.additional.yearFrom) {
+        return this.additional.yearFrom;
+      } else if (this.additional.yearTo) {
+        return this.additional.yearTo;
       }
-    } catch (error) {
-      console.error(error);
     }
+    return 0;
+  }
+
+  async hasDataInDatabase(): Promise<boolean> {
+    const htx = new HistoryRepository();
+    const data = await htx.getOneBy(
+      this.car,
+      this.model,
+      this.getYears().toString()
+    );
+    return data ? true : false;
+  }
+
+  async makeRequest(): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const carId: number = this.getCarId();
+        const modelId: number = await this.getModelId();
+
+        const url = this.buildUrl(carId, modelId);
+        // console.log(url);
+        const { data } = await axios.get(url);
+        const $ = cheerio.load(data);
+        const currentCarUrlText = $(
+          "a.link--muted.no--text--decoration.result-item"
+        );
+        const pagination =
+          $("div.cBox-body.u-text-center.u-margin-top-18 > ul.pagination").find(
+            "li"
+          ).length - 1;
+
+        let urlArray: string[] = [...this.getCarUrls(currentCarUrlText)];
+        if (pagination > 1) {
+          for (let i = 2; i <= 3; i++) {
+            const url = this.buildUrl(carId, modelId, i);
+            // console.log(url);
+            const { data } = await axios.get(url);
+            const $ = cheerio.load(data);
+            const currentCarUrlText = $(
+              "a.link--muted.no--text--decoration.result-item"
+            );
+            urlArray.push(...this.getCarUrls(currentCarUrlText));
+          }
+        }
+
+        await santizeMobileDeData(
+          urlArray,
+          carId,
+          modelId,
+          this.car.toLowerCase(),
+          this.model.toLowerCase()
+        );
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 }
-
-module.exports = MobileDE;

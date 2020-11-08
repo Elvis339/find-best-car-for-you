@@ -9,12 +9,16 @@ export class HistoryRepository implements Repository {
 
   insert(brand_name: string, model_name: string, first_registration?: number) {
     const sql = Queries.insertIntoHistory;
-    dbx.run(sql, [brand_name, model_name, first_registration], (err) => {
-      if (err) {
-        throw new Error(err);
+    dbx.run(
+      sql,
+      [brand_name.toLowerCase(), model_name.toLowerCase(), first_registration],
+      (err) => {
+        if (err) {
+          throw new Error(err);
+        }
+        console.log("Inserted into history log...");
       }
-      console.log("Inserted into history log...");
-    });
+    );
   }
 
   delete() {
@@ -53,7 +57,10 @@ export class HistoryRepository implements Repository {
     });
   }
 
-  getBy({ column, searchBy, select }: findByOpts): Promise<History[] | null> {
+  getBy(
+    { column, searchBy }: findByOpts,
+    select = "*"
+  ): Promise<History[] | null> {
     return new Promise((resolve, reject) => {
       const sql = `SELECT ${select} FROM cars WHERE ${column}=${searchBy};`;
       dbx.all(sql, function (err: Error, rows: History[] | null) {
@@ -62,7 +69,6 @@ export class HistoryRepository implements Repository {
         const hasRows = rows.length > 0 ? rows : null;
         resolve(hasRows);
       });
-      dbx.close();
     });
   }
 

@@ -12,7 +12,7 @@ export class CarRepository implements Repository {
       if (err) {
         throw new Error(err);
       }
-      console.log("ROW INSERTED...");
+      // console.log("ROW INSERTED...");
     });
   }
 
@@ -32,29 +32,30 @@ export class CarRepository implements Repository {
     return null;
   }
 
-  getBy({ column, searchBy }: findByOpts): Promise<Car[] | null> {
+  getBy({ column, searchBy }: findByOpts, select = "*"): Promise<Car[] | null> {
     return new Promise((resolve, reject) => {
-      const sql = `SELECT * FROM cars WHERE ${column}=${searchBy};`;
+      const sql = `SELECT ${select} FROM cars WHERE ${column}=${searchBy};`;
       dbx.all(sql, function (err: Error, rows: Car[] | null) {
         if (err) reject(err);
 
         const hasRows = rows.length > 0 ? rows : null;
         resolve(hasRows);
       });
-      dbx.close();
     });
   }
 
-  getSortedByYearAndPrice(carId: number, modelId: number) {
+  getSortedByYearAndPrice(
+    car_name: string,
+    model_name: string
+  ): Promise<Car[] | null> {
     return new Promise((resolve, reject) => {
-      const sql = `SELECT * FROM 'cars' WHERE car_id=${carId} AND model_id=${modelId} ORDER BY first_registration DESC, price ASC;`;
+      const sql = `SELECT * FROM 'cars' WHERE car_name='${car_name}' AND model_name='${model_name}' ORDER BY first_registration DESC, price ASC;`;
       dbx.all(sql, (err: Error, rows: Car[] | null) => {
         if (err) reject(err);
 
-        const hasRows = rows.length > 0 ? rows : null;
+        const hasRows = rows && rows.length > 0 ? rows : null;
         resolve(hasRows);
       });
-      dbx.close();
     });
   }
 }
