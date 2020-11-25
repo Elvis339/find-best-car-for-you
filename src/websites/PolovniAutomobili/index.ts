@@ -5,8 +5,6 @@ import { PAResponse } from "./PolovniAutomobiliInterface";
 import { CarAdditionalQueryProps } from "../../Entities/Car";
 import { ManagerInterface } from "../ManagerInterface";
 import { santizePolovniAutomobiliData } from "../../Utils";
-import { CarRepository } from "../../Repository/CarRepository";
-import { HistoryRepository } from "../../Repository/HistoryRepository";
 interface UrlType {
   brand: string;
   model: string;

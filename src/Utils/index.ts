@@ -39,6 +39,7 @@ export const santizeMobileDeData = async (
       fuelType,
       vehicleType,
     ]);
+    console.log("Mobile.de inserted!");
   });
 };
 
@@ -95,5 +96,6 @@ export const santizePolovniAutomobiliData = async (
       fuelType,
       vehicleType,
     ]);
+    console.log("Polovni Autombili inserted!");
   });
 };

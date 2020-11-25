@@ -24,7 +24,7 @@ export enum Queries {
     brand_name VARCHAR(20),
     model_name VARCHAR(20),
     first_registration TEXT,
-    date_created DATE
+    time timestamp default (strftime('%s', 'now'))
   );`,
-  insertIntoHistory = `INSERT INTO history(brand_name, model_name, first_registration, date_created) VALUES(?, ?, ?, DateTime('now'));`,
+  insertIntoHistory = `INSERT INTO history(brand_name, model_name, first_registration) VALUES(?, ?, ?);`,
 }

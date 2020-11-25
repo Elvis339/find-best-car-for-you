@@ -9,15 +9,19 @@ export const getCars = async (req: Request, res: Response) => {
   const htx = new HistoryRepository();
   try {
     const data = req.body;
+    console.log(data, "data");
     //@ts-ignore
     const hasCars = req.hasCars;
 
+    console.log(hasCars, "hasCars");
     if (hasCars) {
       const db_data = await repository.getSortedByYearAndPrice(
         data.car,
         data.model
       );
-      return res.status(200).send(db_data);
+      return res.render("cars", {
+        cars: db_data,
+      });
     }
 
     const mobile = await new MobileDE(data.car, data.model, data).makeRequest();
@@ -36,11 +40,14 @@ export const getCars = async (req: Request, res: Response) => {
       data.model
     );
 
+    console.log(query, "query");
     if (query && query.length > 0) {
       htx.insert(data.car, data.model, data.yearFrom);
     }
 
-    res.status(200).send(query);
+    return res.render("cars", {
+      cars: query,
+    });
   } catch (error) {
     console.error(error);
     res.status(400).send({

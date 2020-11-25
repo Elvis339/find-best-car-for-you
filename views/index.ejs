@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head'); %>
+</head>
+
+<body>
+    <div class="container">
+        <%- include('./partials/form'); %>
+    </div>
+    <script>
+        const getData = () => {
+            const form = document.querySelector("form");
+            let obj = {};
+            for (let i = 0; i < form.children.length; i++) {
+                const input = form.children[i].querySelector("input");
+                if (input && input.value !== "") {
+                    obj = {
+                        ...obj,
+                        [input.name]: input.value,
+                    }
+                }
+            }
+            return JSON.stringify(obj);
+        };
+
+        const makeRequest = async (e) => {
+            try {
+                const path = "/find";
+                const data = getData();
+                const res = await fetch(path, {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json, text/plain, */*",
+                        "Content-Type": "application/json"
+                    },
+                    body: data
+                })
+                console.log(res);
+            } catch (error) {
+                console.error(error)
+            }
+        };
+
+        document.querySelector("#makeRequest").addEventListener("click", makeRequest)
+    </script>
+</body>
+
+</html>

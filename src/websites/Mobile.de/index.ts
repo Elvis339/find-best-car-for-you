@@ -219,7 +219,6 @@ export class MobileDE implements MobileDEInterface {
         const modelId: number = await this.getModelId();
 
         const url = this.buildUrl(carId, modelId);
-        // console.log(url);
         const { data } = await axios.get(url);
         const $ = cheerio.load(data);
         const currentCarUrlText = $(
@@ -234,7 +233,6 @@ export class MobileDE implements MobileDEInterface {
         if (pagination > 1) {
           for (let i = 2; i <= 3; i++) {
             const url = this.buildUrl(carId, modelId, i);
-            // console.log(url);
             const { data } = await axios.get(url);
             const $ = cheerio.load(data);
             const currentCarUrlText = $(
